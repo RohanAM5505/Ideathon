@@ -33,16 +33,16 @@ export default function Footer() {
           </h3>
           <ul className="space-y-2 text-sm text-gray-300">
             <li>
-              <span className="text-white">Date:</span> October 22, 2025
+              <span className="text-white">Date:</span> January 25, 2026
             </li>
             <li>
-              <span className="text-white">Duration:</span> 8 Hours
+              <span className="text-white">Duration:</span> TBA
             </li>
             <li>
               <span className="text-white">Venue:</span> SRM University
             </li>
             <li>
-              <span className="text-white">Prize Pool:</span> ₹20,000
+              <span className="text-white">Prize Pool:</span> TBA
             </li>
           </ul>
         </div>
@@ -70,9 +70,13 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="relative border-t border-white/10 py-6 text-center text-xs text-gray-400">
-        © {new Date().getFullYear()} SRM Hackathon. All rights reserved.
-      </div>
+     <div className="relative border-t border-white/10 py-6 text-center text-xs text-gray-400">
+  © {new Date().getFullYear()} SRM Hackathon. All rights reserved.
+  <span className="block mt-2 text-gray-500">
+    Built by SRM Hackathon Web Team
+  </span>
+</div>
+
     </footer>
   );
 }
