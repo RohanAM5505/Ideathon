@@ -2,7 +2,7 @@ import heroBg from "../../assets/images/hero-bg.webp";
 import unionSvg from "../../assets/images/Union.svg";
 import charSvg from "../../assets/images/char.svg";
 
-export default function HeroSection() {
+export default function HeroSection({ onNavigateToRegistration }) {
   return (
     <section className="relative min-h-screen overflow-hidden">
 
@@ -63,6 +63,7 @@ export default function HeroSection() {
           {/* CTA */}
           <div className="pt-2">
             <button
+              onClick={onNavigateToRegistration}
               className="group relative px-8 py-3.5
               bg-gradient-to-r from-purple-600 to-pink-600
               text-white font-semibold text-base rounded-lg
