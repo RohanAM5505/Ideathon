@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logoImage from '../../assets/images/hack-logo.png';
 
-const Navbar = ({ onNavigateToRegistration }) => {
+const Navbar = () => {
   const [activeSection, setActiveSection] = useState('home');
 
   const navItems = [
@@ -10,13 +10,6 @@ const Navbar = ({ onNavigateToRegistration }) => {
     { id: 'timeline', label: 'Timeline' },
     { id: 'register', label: 'Register' }
   ];
-
-  const handleNavClick = (itemId) => {
-    setActiveSection(itemId);
-    if (itemId === 'register' && onNavigateToRegistration) {
-      onNavigateToRegistration();
-    }
-  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
@@ -39,7 +32,7 @@ const Navbar = ({ onNavigateToRegistration }) => {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleNavClick(item.id)}
+                onClick={() => setActiveSection(item.id)}
                 className={`
                   px-4 md:px-6 py-2 rounded-lg font-medium text-sm md:text-base transition-all duration-300
                   ${activeSection === item.id 
