@@ -4,11 +4,11 @@ import HeroSection from '../components/hero/HeroSection'
 import About from '../components/about/About'
 import EventDetails from '../components/events/EventDetails'
 
-const Home = () => {
+const Home = ({ onNavigateToRegistration }) => {
   return (
     <div>
-      <Navbar />
-      <HeroSection />
+      <Navbar onNavigateToRegistration={onNavigateToRegistration} />
+      <HeroSection onNavigateToRegistration={onNavigateToRegistration} />
       <About />
       <EventDetails />
     </div>
