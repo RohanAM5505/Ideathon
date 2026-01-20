@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logoImage from "../../assets/images/hack-logo.png";
 
-const Navbar = () => {
+const Navbar = ({ onNavigateToRegistration }) => {
   const [activeSection, setActiveSection] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -14,9 +14,12 @@ const Navbar = () => {
 
   const handleNavClick = (itemId) => {
     setActiveSection(itemId);
-    if (itemId === 'register' && onNavigateToRegistration) {
+
+    if (itemId === "register" && onNavigateToRegistration) {
       onNavigateToRegistration();
     }
+
+    setMenuOpen(false); // close mobile menu
   };
 
   return (
@@ -41,8 +44,9 @@ const Navbar = () => {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
-                className={`px-6 py-2 rounded-lg transition-all duration-300
+                onClick={() => handleNavClick(item.id)}
+                className={`
+                  px-6 py-2 rounded-lg transition-all duration-300
                   ${
                     activeSection === item.id
                       ? "text-white shadow-lg shadow-purple-500/30"
@@ -55,7 +59,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Hamburger Button (Mobile) */}
+          {/* Hamburger Button */}
           <button
             className="md:hidden text-white text-3xl"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -70,10 +74,7 @@ const Navbar = () => {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => {
-                  setActiveSection(item.id);
-                  setMenuOpen(false);
-                }}
+                onClick={() => handleNavClick(item.id)}
                 className="block w-full text-left text-gray-300 hover:text-white py-2 border-b border-white/10"
               >
                 {item.label}
@@ -86,4 +87,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar; 
