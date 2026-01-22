@@ -1,0 +1,147 @@
+/* ===== SOLO LEVELING FAQ ===== */
+
+/* ===== FAQ – SOLO LEVELING STYLE ===== */
+
+/* ===== FAQ – SOLO LEVELING SYSTEM STYLE ===== */
+/* ===== FAQ – SOLO LEVELING SYSTEM PANEL ===== */
+
+.faq-card {
+  position: relative;
+  background: rgba(10, 15, 30, 0.85);
+  border-radius: 14px;
+  padding: 22px 24px;
+
+  max-height: 76px;
+  overflow: hidden;
+  cursor: pointer;
+
+  border: 1px solid rgba(120, 140, 255, 0.35);
+
+  transition:
+    max-height 0.45s ease,
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* ===== CORNER ACCENTS ===== */
+
+.faq-card::before,
+.faq-card::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(120, 140, 255, 0.6);
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  opacity: 0.6;
+}
+
+/* Top-left corner */
+.faq-card::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 8px;
+}
+
+/* Bottom-right corner */
+.faq-card::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 8px;
+}
+
+/* ===== TEXT ===== */
+
+.faq-question {
+  color: #eef1ff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.faq-answer {
+  color: #b8c0ff;
+  margin-top: 14px;
+  line-height: 1.6;
+  opacity: 0;
+  text-align: left;
+  transition: opacity 0.3s ease;
+}
+
+/* ===== AURA + ACTIVE STATE ===== */
+
+.faq-card:hover,
+.faq-card.open {
+  max-height: 320px;
+  transform: translateY(-4px);
+  border-color: rgba(120, 140, 255, 0.9);
+
+  box-shadow:
+    0 0 18px rgba(120, 140, 255, 0.45),
+    0 0 36px rgba(120, 140, 255, 0.25),
+    inset 0 0 14px rgba(120, 140, 255, 0.12);
+}
+
+.faq-card:hover::before,
+.faq-card:hover::after,
+.faq-card.open::before,
+.faq-card.open::after {
+  opacity: 1;
+}
+
+.faq-card:hover .faq-answer,
+.faq-card.open .faq-answer {
+  opacity: 1;
+}
+
+
+
+
+/* ===== Glassmorphism FAQ Cards ===== */
+
+.faq-card {
+  background: rgba(255, 255, 255, 0.06); /* glass */
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+
+  padding: 20px 22px;
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.faq-card:hover,
+.faq-card.open {
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Text */
+.faq-question {
+  color: #eaeaff;
+  font-weight: 600;
+}
+
+.faq-answer {
+  color: #c7cbe6;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+.faq-card svg {
+  flex-shrink: 0;
+}
+
