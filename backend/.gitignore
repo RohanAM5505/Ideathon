@@ -1,0 +1,6 @@
+serviceAccountKey.json
+**/serviceAccountKey.json
+__pycache__/
+.venv/
+.env
+

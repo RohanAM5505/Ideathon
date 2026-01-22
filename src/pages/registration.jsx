@@ -28,20 +28,20 @@ const Registration = () => {
     const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     return emailRegex.test(email.trim())
   }
-  
+
   const validatePhone = (phone) => {
     return /^\d{10}$/.test(phone)
   }
-  
+
   const validateRegisterNumber = (regNo) => {
     return /^[A-Z0-9]+$/i.test(regNo.trim()) && regNo.trim().length > 0
   }
-  
+
   const validateYear = (year) => {
     const validYears = ['1st', '2nd', '3rd', '4th', '1', '2', '3', '4', 'first', 'second', 'third', 'fourth']
     return validYears.includes(year.toLowerCase().trim())
   }
-  
+
   const validateName = (name) => {
     return /^[a-zA-Z\s]{2,}$/.test(name.trim())
   }
@@ -97,7 +97,7 @@ const Registration = () => {
 
     for (let i = 0; i < 2; i++) {
       const member = formData.members[i]
-      
+
       if (!member.name.trim()) {
         newErrors.members[i].name = 'Name is required'
         isValid = false
@@ -105,7 +105,7 @@ const Registration = () => {
         newErrors.members[i].name = 'Name should contain only letters (minimum 2 characters)'
         isValid = false
       }
-      
+
       if (!member.registerNumber.trim()) {
         newErrors.members[i].registerNumber = 'Register number is required'
         isValid = false
@@ -113,7 +113,7 @@ const Registration = () => {
         newErrors.members[i].registerNumber = 'Register number must contain only letters and numbers'
         isValid = false
       }
-      
+
       if (!member.year.trim()) {
         newErrors.members[i].year = 'Year is required'
         isValid = false
@@ -121,7 +121,7 @@ const Registration = () => {
         newErrors.members[i].year = 'Enter valid year (1st, 2nd, 3rd, or 4th)'
         isValid = false
       }
-      
+
       if (!member.college.trim()) {
         newErrors.members[i].college = 'College is required'
         isValid = false
@@ -129,7 +129,7 @@ const Registration = () => {
         newErrors.members[i].college = 'College name must be at least 3 characters'
         isValid = false
       }
-      
+
       if (!member.email.trim()) {
         newErrors.members[i].email = 'Email is required'
         isValid = false
@@ -137,7 +137,7 @@ const Registration = () => {
         newErrors.members[i].email = 'Enter a valid email address'
         isValid = false
       }
-      
+
       if (!member.phoneNumber.trim()) {
         newErrors.members[i].phoneNumber = 'Phone number is required'
         isValid = false
@@ -159,37 +159,37 @@ const Registration = () => {
         } else if (!validateName(member.name)) {
           newErrors.members[i].name = 'Name should contain only letters (minimum 2 characters)'
         }
-        
+
         if (!member.registerNumber.trim()) {
           newErrors.members[i].registerNumber = 'Register number is required'
         } else if (!validateRegisterNumber(member.registerNumber)) {
           newErrors.members[i].registerNumber = 'Register number must contain only letters and numbers'
         }
-        
+
         if (!member.year.trim()) {
           newErrors.members[i].year = 'Year is required'
         } else if (!validateYear(member.year)) {
           newErrors.members[i].year = 'Enter valid year (1st, 2nd, 3rd, or 4th)'
         }
-        
+
         if (!member.college.trim()) {
           newErrors.members[i].college = 'College is required'
         } else if (member.college.trim().length < 3) {
           newErrors.members[i].college = 'College name must be at least 3 characters'
         }
-        
+
         if (!member.email.trim()) {
           newErrors.members[i].email = 'Email is required'
         } else if (!validateEmail(member.email)) {
           newErrors.members[i].email = 'Enter a valid email address'
         }
-        
+
         if (!member.phoneNumber.trim()) {
           newErrors.members[i].phoneNumber = 'Phone number is required'
         } else if (!validatePhone(member.phoneNumber)) {
           newErrors.members[i].phoneNumber = 'Phone number must be exactly 10 digits'
         }
-        
+
         if (Object.values(newErrors.members[i]).some(err => err)) isValid = false
       }
     }
@@ -198,7 +198,7 @@ const Registration = () => {
     return isValid
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
       const filledMembers = formData.members.filter((member, index) => {
         if (index < 2) return true
@@ -212,7 +212,26 @@ const Registration = () => {
 
       console.log('Form Data:', submissionData)
       console.log('Total Members:', filledMembers.length)
-      alert(`Registration Successful! Your team has been registered with ${filledMembers.length} member${filledMembers.length > 1 ? 's' : ''}.`)
+
+      try {
+        const response = await fetch('http://localhost:8000/registration/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(submissionData),
+        })
+
+        if (response.ok) {
+          alert(`Registration Successful! Your team has been registered with ${filledMembers.length} member${filledMembers.length > 1 ? 's' : ''}.`)
+        } else {
+          const errorData = await response.json()
+          alert(`Registration failed: ${errorData.detail || 'Unknown error'}`)
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error)
+        alert('An error occurred while registering. Please try again.')
+      }
     }
   }
 
@@ -229,10 +248,10 @@ const Registration = () => {
     if (e.key === 'Enter') {
       e.preventDefault()
       const inputs = document.querySelectorAll('input')
-      const currentInputIndex = Array.from(inputs).findIndex(input => 
+      const currentInputIndex = Array.from(inputs).findIndex(input =>
         input === e.target
       )
-      
+
       if (currentInputIndex !== -1 && currentInputIndex < inputs.length - 1) {
         inputs[currentInputIndex + 1].focus()
       } else if (currentInputIndex === inputs.length - 1) {
@@ -247,11 +266,11 @@ const Registration = () => {
     }}>
       {/* Animated Background Effects */}
       <div className="absolute inset-0 opacity-25 pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500 rounded-full filter blur-3xl animate-pulse" 
+        <div className="absolute top-20 left-10 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500 rounded-full filter blur-3xl animate-pulse"
           style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-20 right-10 w-64 h-64 sm:w-96 sm:h-96 bg-pink-500 rounded-full filter blur-3xl animate-pulse" 
+        <div className="absolute bottom-20 right-10 w-64 h-64 sm:w-96 sm:h-96 bg-pink-500 rounded-full filter blur-3xl animate-pulse"
           style={{ animationDuration: '5s', animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 sm:w-96 sm:h-96 bg-fuchsia-500 rounded-full filter blur-3xl animate-pulse" 
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 sm:w-96 sm:h-96 bg-fuchsia-500 rounded-full filter blur-3xl animate-pulse"
           style={{ animationDuration: '6s', animationDelay: '2s' }} />
       </div>
 
@@ -271,15 +290,15 @@ const Registration = () => {
               <div className="absolute inset-0 bg-purple-300 blur-2xl opacity-50" />
             </div>
           </div>
-          
+
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text 
             bg-gradient-to-r from-purple-300 via-pink-200 to-purple-300 mb-3 sm:mb-4 tracking-tight
             animate-pulse px-4" style={{
-            textShadow: '0 0 40px rgba(216,180,254,0.6), 0 0 60px rgba(216,180,254,0.4)'
-          }}>
+              textShadow: '0 0 40px rgba(216,180,254,0.6), 0 0 60px rgba(216,180,254,0.4)'
+            }}>
             IDEATHON
           </h1>
-          
+
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6 px-4">
             <div className="h-px w-12 sm:w-16 bg-gradient-to-r from-transparent to-purple-300" />
             <p className="text-lg sm:text-xl md:text-2xl text-purple-200 font-bold tracking-widest">TEAM REGISTRATION</p>
@@ -296,7 +315,7 @@ const Registration = () => {
               <Users className="w-6 h-6 sm:w-8 sm:h-8 text-purple-300 flex-shrink-0" />
               <h2 className="text-2xl sm:text-3xl font-bold text-white">Team Information</h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div className="mb-3 sm:mb-4">
                 <label className="block text-gray-300 text-xs sm:text-sm mb-1.5 sm:mb-2 font-medium tracking-wide uppercase">Team Name</label>
@@ -366,19 +385,19 @@ const Registration = () => {
               const isMandatory = index < 2
               const isLeader = index === 0
               const ranks = ['Member 1 - Team Leader', 'Member 2', 'Member 3', 'Member 4']
-              const rankColors = ['from-purple-400 to-pink-500', 'from-fuchsia-400 to-purple-500', 
-                                  'from-violet-400 to-fuchsia-500', 'from-pink-400 to-purple-500']
+              const rankColors = ['from-purple-400 to-pink-500', 'from-fuchsia-400 to-purple-500',
+                'from-violet-400 to-fuchsia-500', 'from-pink-400 to-purple-500']
 
               return (
                 <div key={index} className={`relative rounded-lg sm:rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 backdrop-blur-md transition-all duration-500
-                  ${isLeader ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-2 border-purple-400/50' 
-                  : 'bg-purple-900/20 border border-purple-400/25'}`}
+                  ${isLeader ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-2 border-purple-400/50'
+                    : 'bg-purple-900/20 border border-purple-400/25'}`}
                   style={{
-                    boxShadow: isLeader 
-                      ? '0 8px 32px rgba(168,85,247,0.3), inset 0 1px 1px rgba(255,255,255,0.1)' 
+                    boxShadow: isLeader
+                      ? '0 8px 32px rgba(168,85,247,0.3), inset 0 1px 1px rgba(255,255,255,0.1)'
                       : '0 4px 24px rgba(168,85,247,0.2), inset 0 1px 1px rgba(255,255,255,0.05)'
                   }}>
-                  
+
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 pb-4 border-b border-gray-700/50 gap-2">
                     <div className="flex items-center gap-3">
                       <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${rankColors[index]} 
