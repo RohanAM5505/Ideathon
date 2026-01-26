@@ -63,6 +63,7 @@ export default function HeroSection({ onNavigateToRegistration }) {
           
           <div className="pt-2 sm:pt-3 md:pt-4">
             <button 
+              onClick={onNavigateToRegistration}
               className="group relative inline-flex items-center justify-center w-auto px-5 sm:px-8 md:px-10 py-2.5 sm:py-3.5 md:py-4 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-600 text-white font-bold text-xs sm:text-base md:text-lg rounded-lg shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95 border border-purple-400/30"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >

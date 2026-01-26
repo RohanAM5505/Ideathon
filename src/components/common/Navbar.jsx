@@ -32,7 +32,7 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             <img src={logoImage} alt="Logo" className="w-10 h-10" />
             <h1 className="text-white font-bold tracking-wide text-lg">
-              TEAM SRM <span className="text-pink-400 font-extrabold">HACKATHON</span>
+              TEAM SRM <span className="text-blue-400 font-extrabold">HACKATHON</span>
             </h1>
           </div>
 

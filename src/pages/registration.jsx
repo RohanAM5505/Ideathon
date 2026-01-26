@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
-import { Users, Trophy, Zap } from 'lucide-react'
+import { Users, CheckCircle } from 'lucide-react'
+import Navbar from '../components/common/Navbar'
+import { initiatePayment } from '../services/razorpay'
+import { saveRegistration } from '../services/registrationservice'
 
-const Registration = () => {
+const Registration = ({ onNavigateToHome }) => {
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+
   const [formData, setFormData] = useState({
     teamName: '',
     track: '',
@@ -43,6 +48,32 @@ const Registration = () => {
   
   const validateName = (name) => {
     return /^[a-zA-Z\s]{2,}$/.test(name.trim())
+  }
+
+  /**
+   * Reset all form fields to initial state
+   */
+  const resetForm = () => {
+    setFormData({
+      teamName: '',
+      track: '',
+      members: Array(4).fill(null).map(() => ({
+        name: '',
+        registerNumber: '',
+        year: '',
+        college: '',
+        email: '',
+        phoneNumber: ''
+      }))
+    });
+    
+    setErrors({
+      teamName: '',
+      track: '',
+      members: Array(4).fill(null).map(() => ({
+        name: '', registerNumber: '', year: '', college: '', email: '', phoneNumber: ''
+      }))
+    });
   }
 
   const handleTeamChange = (field, value) => {
@@ -197,23 +228,82 @@ const Registration = () => {
     return isValid
   }
 
+  /**
+   * Handles form submission and payment initiation
+   * Validates form data before proceeding to payment
+   */
   const handleSubmit = () => {
-    if (validateForm()) {
-      const filledMembers = formData.members.filter((member, index) => {
-        if (index < 2) return true
-        return Object.values(member).some(val => val.trim())
-      })
-
-      const submissionData = {
-        ...formData,
-        members: filledMembers
-      }
-
-      console.log('Form Data:', submissionData)
-      console.log('Total Members:', filledMembers.length)
-      alert(`Registration Successful! Your team has been registered with ${filledMembers.length} member${filledMembers.length > 1 ? 's' : ''}.`)
+    // Validate form - checks all required fields
+    const isValid = validateForm();
+    
+    // Stop if validation fails and show error messages
+    if (!isValid) {
+      return;
     }
-  }
+
+    // Filter members: Always include first 2 (mandatory), include 3rd and 4th only if they have data
+    const filledMembers = formData.members.filter((member, index) => {
+      if (index < 2) return true; // First 2 members are mandatory
+      return Object.values(member).some(val => val.trim()); // Include optional members only if filled
+    });
+
+    // Prepare final submission data
+    const submissionData = {
+      ...formData,
+      members: filledMembers,
+    };
+
+    // Initiate Razorpay payment
+    try {
+      initiatePayment({
+        amount: 156, // ₹156 (₹150 registration + ₹6 platform fee)
+        formData: {
+          leaderName: submissionData.members[0].name,
+          leaderEmail: submissionData.members[0].email,
+          leaderPhone: submissionData.members[0].phoneNumber,
+        },
+        onSuccess: async (paymentResponse) => {
+          // Combine registration data with payment details
+          const finalDataWithPayment = {
+            ...submissionData,
+            payment: {
+              paymentId: paymentResponse.razorpay_payment_id,
+              orderId: paymentResponse.razorpay_order_id || null,
+              signature: paymentResponse.razorpay_signature || null,
+              amount: 156,
+              currency: 'INR',
+              status: 'success',
+              timestamp: new Date().toISOString()
+            },
+            registrationDate: new Date().toISOString()
+          };
+          
+          // Save to Firebase
+          try {
+            await saveRegistration(finalDataWithPayment);
+            
+            // Show success modal
+            setShowSuccessModal(true);
+            
+            // Reset form fields
+            resetForm();
+          } catch (firebaseError) {
+            console.error("❌ Firebase save failed:", firebaseError);
+            console.error("Error details:", {
+              message: firebaseError.message,
+              code: firebaseError.code,
+              stack: firebaseError.stack
+            });
+            alert("Payment successful but failed to save registration data. Please contact support with payment ID: " + paymentResponse.razorpay_payment_id);
+          }
+        },
+      });
+    } catch (error) {
+      console.error('❌ Payment initiation error:', error);
+      alert('Failed to open payment window. Please check console for details.');
+    }
+  };
+
 
   const memberFields = [
     { field: 'name', label: 'Name', type: 'text', placeholder: 'Enter your name' },
@@ -241,64 +331,54 @@ const Registration = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden overflow-x-hidden" style={{
-      background: 'linear-gradient(135deg, #2d1b4e 0%, #3d2463 20%, #5c3570 40%, #6b4280 60%, #5c3570 80%, #3d2463 100%)'
-    }}>
-      {/* Animated Background Effects */}
-      <div className="absolute inset-0 opacity-25 pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500 rounded-full filter blur-3xl animate-pulse" 
-          style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-20 right-10 w-64 h-64 sm:w-96 sm:h-96 bg-pink-500 rounded-full filter blur-3xl animate-pulse" 
-          style={{ animationDuration: '5s', animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 sm:w-96 sm:h-96 bg-fuchsia-500 rounded-full filter blur-3xl animate-pulse" 
-          style={{ animationDuration: '6s', animationDelay: '2s' }} />
-      </div>
+    <>
+      <Navbar />
+      <div className="min-h-screen relative overflow-hidden overflow-x-hidden pt-16">
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/30 pointer-events-none z-0" />
+        
+        {/* Animated Background Effects */}
+       
 
-      {/* Grid Pattern Overlay */}
+        {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
         backgroundImage: `linear-gradient(rgba(59,130,246,0.1) 1px, transparent 1px),
                          linear-gradient(90deg, rgba(59,130,246,0.1) 1px, transparent 1px)`,
         backgroundSize: '50px 50px'
       }} />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="relative z-10 max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12">
         {/* Header */}
-        <div className="text-center mb-12 sm:mb-16">
-          <div className="inline-block mb-4 sm:mb-6">
-            <div className="relative">
-              <Zap className="w-12 h-12 sm:w-16 sm:h-16 text-purple-300 mx-auto mb-3 sm:mb-4 animate-pulse" />
-              <div className="absolute inset-0 bg-purple-300 blur-2xl opacity-50" />
-            </div>
-          </div>
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text 
-            bg-gradient-to-r from-purple-300 via-pink-200 to-purple-300 mb-3 sm:mb-4 tracking-tight
-            animate-pulse px-4" style={{
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text 
+            bg-gradient-to-r from-white via-purple-100 to-pink-100 mb-2 sm:mb-3 md:mb-4 tracking-tight
+             px-2 sm:px-4" style={{
             textShadow: '0 0 40px rgba(216,180,254,0.6), 0 0 60px rgba(216,180,254,0.4)'
           }}>
-            IDEATHON
+            IDEATHON 6.0
           </h1>
           
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6 px-4">
-            <div className="h-px w-12 sm:w-16 bg-gradient-to-r from-transparent to-purple-300" />
-            <p className="text-lg sm:text-xl md:text-2xl text-purple-200 font-bold tracking-widest">TEAM REGISTRATION</p>
-            <div className="h-px w-12 sm:w-16 bg-gradient-to-l from-transparent to-purple-300" />
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6 px-2 sm:px-4">
+            <div className="h-px w-8 sm:w-12 md:w-16 bg-gradient-to-r from-transparent to-purple-300" />
+            <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-purple-200 font-bold tracking-wider sm:tracking-widest">TEAM REGISTRATION</p>
+            <div className="h-px w-8 sm:w-12 md:w-16 bg-gradient-to-l from-transparent to-purple-300" />
           </div>
         </div>
 
         {/* Form */}
-        <div className="space-y-6 sm:space-y-8">
+        <div className="space-y-4 sm:space-y-6 md:space-y-8">
           {/* Team Information */}
-          <div className="bg-purple-900/30 backdrop-blur-xl rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-purple-400/30 
+          <div className="bg-purple-900/30 backdrop-blur-xl rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 border border-purple-400/30 
             shadow-[0_8px_32px_rgba(168,85,247,0.4)]">
-            <div className="flex items-center gap-3 mb-5 sm:mb-6">
-              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-purple-300 flex-shrink-0" />
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">Team Information</h2>
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+              <Users className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-purple-300 flex-shrink-0" />
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Team Information</h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6">
               <div className="mb-3 sm:mb-4">
-                <label className="block text-gray-300 text-xs sm:text-sm mb-1.5 sm:mb-2 font-medium tracking-wide uppercase">Team Name</label>
+                <label className="block text-gray-300 text-[10px] xs:text-xs sm:text-sm mb-1 sm:mb-1.5 md:mb-2 font-medium tracking-wide uppercase">Team Name</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -306,7 +386,7 @@ const Registration = () => {
                     onChange={(e) => handleTeamChange('teamName', e.target.value)}
                     onKeyDown={(e) => handleKeyDown(e)}
                     placeholder="Enter your team name"
-                    className="w-full bg-purple-950/40 border border-purple-400/30 rounded-lg py-3 sm:py-3.5 px-3 sm:px-4 text-white text-sm sm:text-base
+                    className="w-full bg-purple-950/40 border border-purple-400/30 rounded-md sm:rounded-lg py-2 sm:py-3 md:py-3.5 px-2 sm:px-3 md:px-4 text-white text-xs sm:text-sm md:text-base
                       placeholder-purple-300/50 outline-none transition-all duration-500 backdrop-blur-sm
                       focus:border-purple-400/70 focus:bg-purple-950/50"
                     style={{
@@ -321,21 +401,19 @@ const Registration = () => {
                     }}
                   />
                 </div>
-                {errors.teamName && <span className="text-red-400 text-xs mt-1 sm:mt-1.5 block leading-tight">{errors.teamName}</span>}
+                {errors.teamName && <span className="text-red-400 text-xs sm:text-sm mt-1 sm:mt-1.5 block leading-tight font-medium">{errors.teamName}</span>}
               </div>
 
               <div className="mb-3 sm:mb-4">
-                <label className="block text-gray-300 text-xs sm:text-sm mb-1.5 sm:mb-2 font-medium tracking-wide uppercase">Domain / Track</label>
+                <label className="block text-gray-300 text-[10px] xs:text-xs sm:text-sm mb-1 sm:mb-1.5 md:mb-2 font-medium tracking-wide uppercase">Domain / Track</label>
                 <div className="relative">
-                  <input
-                    type="text"
+                  <select
                     value={formData.track}
                     onChange={(e) => handleTeamChange('track', e.target.value)}
                     onKeyDown={(e) => handleKeyDown(e)}
-                    placeholder="AI, Web Dev, Blockchain, etc."
-                    className="w-full bg-purple-950/40 border border-purple-400/30 rounded-lg py-3 sm:py-3.5 px-3 sm:px-4 text-white text-sm sm:text-base
-                      placeholder-purple-300/50 outline-none transition-all duration-500 backdrop-blur-sm
-                      focus:border-purple-400/70 focus:bg-purple-950/50"
+                    className="w-full bg-purple-950/40 border border-purple-400/30 rounded-md sm:rounded-lg py-2 sm:py-3 md:py-3.5 px-2 sm:px-3 md:px-4 text-white text-xs sm:text-sm md:text-base
+                      outline-none transition-all duration-500 backdrop-blur-sm
+                      focus:border-purple-400/70 focus:bg-purple-950/50 appearance-none cursor-pointer"
                     style={{
                       boxShadow: 'none',
                       minHeight: '44px'
@@ -346,19 +424,31 @@ const Registration = () => {
                     onBlur={(e) => {
                       e.target.style.boxShadow = 'none'
                     }}
-                  />
+                  >
+                    <option value="" className="bg-purple-950 text-gray-400">Select a domain</option>
+                    <option value="HEALTH-TECH INNOVATIONS" className="bg-purple-950">HEALTH-TECH INNOVATIONS</option>
+                    <option value="IOT-DRIVEN HARDWARE OPTIMIZATION" className="bg-purple-950">IOT-DRIVEN HARDWARE OPTIMIZATION</option>
+                    <option value="ARTIFICIAL INTELLIGENCE" className="bg-purple-950">ARTIFICIAL INTELLIGENCE</option>
+                    <option value="BLOCKCHAIN FOR SOCIAL IMPACT" className="bg-purple-950">BLOCKCHAIN FOR SOCIAL IMPACT</option>
+                    <option value="SUSTAINABLE DEVELOPMENT" className="bg-purple-950">SUSTAINABLE DEVELOPMENT</option>
+                  </select>
+                  <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
-                {errors.track && <span className="text-red-400 text-xs mt-1 sm:mt-1.5 block leading-tight">{errors.track}</span>}
+                {errors.track && <span className="text-red-400 text-xs sm:text-sm mt-1 sm:mt-1.5 block leading-tight font-medium">{errors.track}</span>}
               </div>
             </div>
           </div>
 
           {/* Team Members */}
-          <div className="bg-purple-900/30 backdrop-blur-xl rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-purple-400/30 
+          <div className="bg-purple-900/30 backdrop-blur-xl rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 border border-purple-400/30 
             shadow-[0_8px_32px_rgba(168,85,247,0.4)]">
-            <div className="flex items-center gap-3 mb-6 sm:mb-8">
-              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-purple-300 flex-shrink-0" />
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">Team Members</h2>
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 md:mb-8">
+              <Users className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-purple-300 flex-shrink-0" />
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Team Members</h2>
             </div>
 
             {[0, 1, 2, 3].map((index) => {
@@ -370,7 +460,7 @@ const Registration = () => {
 
               return (
                 <div key={index} className={`relative rounded-lg sm:rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 backdrop-blur-md transition-all duration-500
-                  ${isLeader ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-2 border-purple-400/50' 
+                  ${isLeader ? 'bg-gradient-to-br from-purple-700/20 to-pink-400/20 border-2 border-purple-400/50' 
                   : 'bg-purple-900/20 border border-purple-400/25'}`}
                   style={{
                     boxShadow: isLeader 
@@ -382,7 +472,7 @@ const Registration = () => {
                     <div className="flex items-center gap-3">
                       <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${rankColors[index]} 
                         flex items-center justify-center shadow-lg flex-shrink-0`}>
-                        {isLeader ? <Trophy className="w-6 h-6 text-white" /> : <Users className="w-6 h-6 text-white" />}
+                        {isLeader ? <img src="/leader.svg" alt="Leader" className="w-6 h-6" /> : <Users className="w-6 h-6 text-white" />}
                       </div>
                       <div>
                         <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">{ranks[index]}</h3>
@@ -392,16 +482,16 @@ const Registration = () => {
                       </div>
                     </div>
                     {isMandatory && (
-                      <div className="bg-red-500/20 border border-red-500/40 rounded-full px-3 py-1 self-start sm:self-auto">
-                        <span className="text-red-400 text-xs font-semibold">MANDATORY</span>
+                      <div className="bg-red-500/20 border border-red-500/40 rounded-full px-2 sm:px-3 py-0.5 sm:py-1 self-start sm:self-auto">
+                        <span className="text-red-400 text-[10px] sm:text-xs font-semibold">MANDATORY</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
                     {memberFields.map(({ field, label, type, placeholder, maxLength }) => (
-                      <div key={field} className="mb-3 sm:mb-4">
-                        <label className="block text-gray-300 text-xs sm:text-sm mb-1.5 sm:mb-2 font-medium tracking-wide uppercase">{label}</label>
+                      <div key={field} className="mb-2 sm:mb-3 md:mb-4">
+                        <label className="block text-gray-300 text-[10px] xs:text-xs sm:text-sm mb-1 sm:mb-1.5 md:mb-2 font-medium tracking-wide uppercase">{label}</label>
                         <div className="relative">
                           <input
                             type={type}
@@ -420,12 +510,12 @@ const Registration = () => {
                             onKeyDown={(e) => handleKeyDown(e, index, field)}
                             placeholder={placeholder}
                             maxLength={maxLength}
-                            className="w-full bg-purple-950/40 border border-purple-400/30 rounded-lg py-3 sm:py-3.5 px-3 sm:px-4 text-white text-sm sm:text-base
+                            className="w-full bg-purple-950/40 border border-purple-400/30 rounded-md sm:rounded-lg py-2 sm:py-3 md:py-3.5 px-2 sm:px-3 md:px-4 text-white text-xs sm:text-sm md:text-base
                               placeholder-purple-300/50 outline-none transition-all duration-500 backdrop-blur-sm
                               focus:border-purple-400/70 focus:bg-purple-950/50"
                             style={{
                               boxShadow: 'none',
-                              minHeight: '44px'
+                              minHeight: '36px'
                             }}
                             onFocus={(e) => {
                               e.target.style.boxShadow = '0 0 20px rgba(216,180,254,0.4), inset 0 0 15px rgba(216,180,254,0.15), 0 0 40px rgba(216,180,254,0.2)'
@@ -436,7 +526,7 @@ const Registration = () => {
                           />
                         </div>
                         {errors.members[index][field] && (
-                          <span className="text-red-400 text-xs mt-1 sm:mt-1.5 block leading-tight">{errors.members[index][field]}</span>
+                          <span className="text-red-400 text-[10px] sm:text-xs mt-0.5 sm:mt-1 md:mt-1.5 block leading-tight">{errors.members[index][field]}</span>
                         )}
                       </div>
                     ))}
@@ -446,26 +536,76 @@ const Registration = () => {
             })}
           </div>
 
+         
+
           {/* Submit Button */}
           <button
+          type="button"
             onClick={handleSubmit}
-            className="w-full relative group overflow-hidden rounded-lg sm:rounded-xl p-1 transition-all duration-300"
+            className="w-full relative group overflow-hidden rounded-md sm:rounded-lg md:rounded-xl p-0.5 sm:p-1 transition-all duration-300"
             style={{
               background: 'linear-gradient(90deg, #a855f7, #ec4899, #a855f7)',
               backgroundSize: '200% 100%',
               animation: 'gradient 3s ease infinite'
             }}>
-            <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg py-4 sm:py-5 px-6 sm:px-8 
+            <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 rounded-md sm:rounded-lg py-3 sm:py-4 md:py-5 px-4 sm:px-6 md:px-8 
               transition-all duration-300 group-hover:from-purple-500 group-hover:to-pink-500">
-              <span className="text-white text-base sm:text-lg md:text-xl font-bold tracking-widest flex items-center justify-center gap-2 sm:gap-3">
-                <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
-                REGISTER TEAM
-                <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="text-white text-sm sm:text-base md:text-lg lg:text-xl font-bold tracking-wider sm:tracking-widest flex items-center justify-center gap-2 sm:gap-3">
+                CHECKOUT
               </span>
             </div>
           </button>
         </div>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="relative bg-gradient-to-br from-purple-900/95 via-purple-800/95 to-pink-900/95 backdrop-blur-xl rounded-2xl p-6 sm:p-8 md:p-10 max-w-md w-full border-2 border-purple-400/50 shadow-[0_0_50px_rgba(168,85,247,0.5)]">
+            {/* Success Icon */}
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <CheckCircle className="w-20 h-20 sm:w-24 sm:h-24 text-green-400 animate-pulse" />
+                <div className="absolute inset-0 bg-green-400 blur-2xl opacity-40" />
+              </div>
+            </div>
+
+            {/* Success Message */}
+            <div className="text-center mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
+                Thank You for Registering!
+              </h2>
+              <p className="text-base sm:text-lg text-purple-200 mb-3">
+                Your registration for <span className="font-bold text-white">IDEATHON</span> has been confirmed.
+              </p>
+              <p className="text-sm sm:text-base text-purple-300">
+                You will be added to the WhatsApp group soon.
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent mb-6" />
+
+            {/* Info Text */}
+            <p className="text-center text-xs sm:text-sm text-purple-300 mb-6">
+              Check your email for confirmation and further details.
+            </p>
+
+            {/* Go to Home Button */}
+            <button
+              onClick={() => {
+                setShowSuccessModal(false);
+                if (onNavigateToHome) {
+                  onNavigateToHome();
+                }
+              }}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 sm:py-4 px-6 rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-purple-500/50 text-sm sm:text-base"
+            >
+              GO TO HOME PAGE
+            </button>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes gradient {
@@ -473,7 +613,8 @@ const Registration = () => {
           50% { background-position: 100% 50%; }
         }
       `}</style>
-    </div>
+      </div>
+    </>
   )
 }
 
