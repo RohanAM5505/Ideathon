@@ -5,6 +5,7 @@ import About from '../components/about/About'
 import EventDetails from '../components/events/EventDetails'
 import Domain from './Domain'
 import FaqSection from '../components/faq/FaqSection'
+import Timeline from'../components/timeline/Timeline'
 import Footer from '../components/common/Footer'
 
 const Home = ({ onNavigateToRegistration }) => {
@@ -15,11 +16,11 @@ const Home = ({ onNavigateToRegistration }) => {
       <Domain />
       <About />
       <EventDetails />
+      <Timeline/>
       <FaqSection />
-
       <Footer />
     </div>
   )
 }
 
-export default Home
+export default Home;
