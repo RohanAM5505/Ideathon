@@ -1,4 +1,4 @@
-import './FaqSection.css'
+
 import { ChevronDown } from 'lucide-react'
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
