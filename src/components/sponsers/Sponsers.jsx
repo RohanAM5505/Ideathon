@@ -17,7 +17,7 @@ const Sponsers = () => {
           className="text-center mb-12 md:mb-16"
         >
           <h2
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 drop-shadow-[0_2px_10px_rgba(168,85,247,0.4)]"
+            className="text-5xl md:text-5xl lg:text-6xl font-bold mb-3 drop-shadow-[0_2px_10px_rgba(168,85,247,0.4)]"
             style={{
               fontFamily: "'Playfair Display', serif",
               textShadow: '2px 2px 4px rgba(0,0,0,0.3), 0 0 30px rgba(168,85,247,0.3)'
