@@ -7,7 +7,7 @@ const EventDetails = () => {
   return (
     <section
       id="timeline"
-      className="relative py-20 md:py-32 overflow-hidden scroll-mt-28"
+      className="relative py-12 md:py-20 overflow-hidden scroll-mt-28"
     >
       <GridBackground />
 

@@ -9,17 +9,22 @@ import Footer from '../components/common/Footer'
 import Timeline from '../components/eventtimeline/Timeline'
 import Sponsers from '../components/sponsers/Sponsers'
 
-const Home = ({ onNavigateToRegistration }) => {
+const Home = () => {
   return (
     <div>
-      <Navbar onNavigateToRegistration={onNavigateToRegistration} />
-      <HeroSection onNavigateToRegistration={onNavigateToRegistration} />
-      <Domain />
+      <Navbar />
+      <div data-section="home">
+        <HeroSection />
+      </div>
+      <div data-section="about">
+        <Domain />
+      </div>
       <EventDetails />
-      <Timeline />
+      <div data-section="timeline">
+        <Timeline />
+      </div>
       <Sponsers />
       <FaqSection />
-
       <Footer />
     </div>
   )
