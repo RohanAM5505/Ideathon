@@ -18,9 +18,15 @@ const EventDetails = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
+            className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold"
+            style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            Event <span className="text-pink-400">Details</span>
+            <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-purple-300 bg-clip-text text-transparent">
+              Event
+            </span>{" "}
+            <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">
+              Details
+            </span>
           </motion.h2>
         </div>
 

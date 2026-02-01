@@ -142,8 +142,16 @@ const Domain = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12 sm:mb-16"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold  mb-3 sm:mb-4">
-            Innovation <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Domains</span>
+          <h1 
+            className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-purple-300 bg-clip-text text-transparent">
+              Innovation
+            </span>{" "}
+            <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">
+              Domains
+            </span>
           </h1>
           <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-2">
             Explore the cutting-edge domains where innovation meets impact

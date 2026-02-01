@@ -63,9 +63,9 @@ export default function HeroSection() {
       <img
         src={charSvg}
         alt=""
-        className="absolute bottom-[-10px] right-[-120px] sm:right-[-40px] lg:right-5
-                   h-[38vh] sm:h-[60vh] md:h-[70vh] lg:h-[85vh]
-                   opacity-25 sm:opacity-60 md:opacity-90
+        className="absolute bottom-[-10px] right-[-100px] sm:right-[-40px] lg:right-5
+                   h-[42vh] sm:h-[60vh] md:h-[70vh] lg:h-[85vh]
+                   opacity-40 sm:opacity-60 md:opacity-90
                    pointer-events-none z-20"
       />
 
