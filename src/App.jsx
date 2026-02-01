@@ -1,27 +1,15 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
-import Registration from './pages/registration'
+import Registration from './pages/Registration' // if you have a registration page
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home')
-
-  const navigateToRegistration = () => {
-    setCurrentPage('registration')
-  }
-
-  const navigateToHome = () => {
-    setCurrentPage('home')
-  }
-
   return (
-    <>
-      {currentPage === 'home' ? (
-        <Home onNavigateToRegistration={navigateToRegistration} />
-      ) : (
-        <Registration onNavigateToHome={navigateToHome} />
-      )}
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Registration />} />
+      </Routes>
+    </Router>
   )
 }
 
