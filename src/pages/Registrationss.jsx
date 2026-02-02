@@ -236,18 +236,13 @@ const Registration = () => {
    * Validates form data before proceeding to payment
    */
   const handleSubmit = () => {
-    console.log("🚀 [REGISTRATION] Form submission started");
-    
     // Validate form - checks all required fields
     const isValid = validateForm();
     
     // Stop if validation fails and show error messages
     if (!isValid) {
-      console.log("❌ [VALIDATION] Form validation failed");
       return;
     }
-    
-    console.log("✅ [VALIDATION] Form validation passed");
 
     // Filter members: Always include first 2 (mandatory), include 3rd and 4th only if they have data
     const filledMembers = formData.members.filter((member, index) => {
@@ -260,17 +255,8 @@ const Registration = () => {
       ...formData,
       members: filledMembers,
     };
-    
-    console.log("📝 [DATA] Prepared submission data:", {
-      teamName: submissionData.teamName,
-      track: submissionData.track,
-      memberCount: filledMembers.length,
-      leaderName: filledMembers[0].name,
-      leaderEmail: filledMembers[0].email
-    });
 
     // Initiate Razorpay payment
-    console.log("💳 [PAYMENT] Initiating Razorpay payment...");
     try {
       initiatePayment({
         amount: 156, // ₹156 (₹150 registration + ₹6 platform fee)
@@ -280,13 +266,6 @@ const Registration = () => {
           leaderPhone: submissionData.members[0].phoneNumber,
         },
         onSuccess: async (paymentResponse) => {
-          console.log("✅ [PAYMENT] Payment successful!");
-          console.log("💰 [PAYMENT] Payment Response:", {
-            paymentId: paymentResponse.razorpay_payment_id,
-            orderId: paymentResponse.razorpay_order_id,
-            signature: paymentResponse.razorpay_signature
-          });
-          
           // Combine registration data with payment details
           const finalDataWithPayment = {
             ...submissionData,
@@ -294,7 +273,7 @@ const Registration = () => {
               paymentId: paymentResponse.razorpay_payment_id,
               orderId: paymentResponse.razorpay_order_id || null,
               signature: paymentResponse.razorpay_signature || null,
-              amount: 156,
+              amount: 152.52, 
               currency: 'INR',
               status: 'success',
               timestamp: new Date().toISOString()
@@ -302,13 +281,9 @@ const Registration = () => {
             registrationDate: new Date().toISOString()
           };
           
-          console.log("📦 [DATA] Final data with payment:", finalDataWithPayment);
-          
           // Save to Firebase
-          console.log("🔄 [FIREBASE] Attempting to save registration to Firebase...");
           try {
-            const docId = await saveRegistration(finalDataWithPayment);
-            console.log("✅ [FIREBASE] Registration saved successfully! Document ID:", docId);
+            await saveRegistration(finalDataWithPayment);
             
             // Show success modal
             console.log("🎉 [UI] Showing success modal");
@@ -318,15 +293,7 @@ const Registration = () => {
             console.log("🔄 [UI] Resetting form");
             resetForm();
           } catch (firebaseError) {
-            console.error("❌ [FIREBASE ERROR] Save failed:", firebaseError);
-            console.error("❌ [FIREBASE ERROR] Error details:", {
-              message: firebaseError.message,
-              code: firebaseError.code,
-              stack: firebaseError.stack,
-              name: firebaseError.name
-            });
-            console.error("❌ [FIREBASE ERROR] Payment ID that failed to save:", paymentResponse.razorpay_payment_id);
-            console.error("❌ [FIREBASE ERROR] Full data that failed:", finalDataWithPayment);
+            console.error("Firebase save failed:", firebaseError);
             alert("Payment successful but failed to save registration data. Please contact support with payment ID: " + paymentResponse.razorpay_payment_id);
           }
         },
