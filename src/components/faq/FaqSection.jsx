@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: 'Can I participate individually or in a team?',
-    a: 'You can participate in teams of 2-4 members. Solo participation is also allowed if you prefer to work independently.'
+    a: 'You can participate in teams of 2-4 members.'
   },
   {
     q: 'Is there any registration fee?',
@@ -131,20 +131,7 @@ const FaqSection = () => {
         </div>
 
         {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-12"
-        >
-          <p className="text-gray-400 text-sm md:text-base">
-            Still have questions?{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold">
-              Reach out to our team!
-            </span>
-          </p>
-        </motion.div>
+        
       </div>
     </section>
   )
