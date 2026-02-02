@@ -300,9 +300,7 @@ const EventDetails = () => {
               className="relative rounded-2xl bg-gradient-to-br from-purple-950/50 via-black/60 to-black/40
                          backdrop-blur-xl border border-purple-400/30 p-5 overflow-hidden"
             >
-              <div className="absolute inset-0 opacity-[0.05]">
-                <img src={Godimage} alt="" className="absolute right-0 bottom-0 h-full w-auto object-contain" />
-              </div>
+              
               
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-4">

@@ -26,20 +26,8 @@ export default function GridBackground() {
 
     // Handle both mouse and touch events
     const handlePointerMove = (e) => {
-      if (isMobile) {
-        // For touch, clear any existing timeout
-        if (touchTimeout) clearTimeout(touchTimeout);
-        
-        const touch = e.touches ? e.touches[0] : e;
-        mouse.x = touch.clientX;
-        mouse.y = touch.clientY;
-        
-        // Auto-hide touch interaction after 150ms of no movement
-        touchTimeout = setTimeout(() => {
-          mouse.x = -9999;
-          mouse.y = -9999;
-        }, 150);
-      } else {
+      // Only enable on desktop, disable on mobile to prevent lag
+      if (!isMobile) {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
       }
@@ -51,12 +39,8 @@ export default function GridBackground() {
       mouse.y = -9999;
     };
 
-    // Add appropriate event listeners
-    if (isMobile) {
-      window.addEventListener("touchstart", handlePointerMove, { passive: true });
-      window.addEventListener("touchmove", handlePointerMove, { passive: true });
-      window.addEventListener("touchend", handlePointerEnd, { passive: true });
-    } else {
+    // Add event listeners only for desktop
+    if (!isMobile) {
       window.addEventListener("mousemove", handlePointerMove);
       window.addEventListener("mouseleave", handlePointerEnd);
     }
@@ -231,11 +215,8 @@ export default function GridBackground() {
       if (resizeObserver) resizeObserver.disconnect();
       if (touchTimeout) clearTimeout(touchTimeout);
       
-      if (isMobile) {
-        window.removeEventListener("touchstart", handlePointerMove);
-        window.removeEventListener("touchmove", handlePointerMove);
-        window.removeEventListener("touchend", handlePointerEnd);
-      } else {
+      // Only remove desktop event listeners
+      if (!isMobile) {
         window.removeEventListener("mousemove", handlePointerMove);
         window.removeEventListener("mouseleave", handlePointerEnd);
       }
