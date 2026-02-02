@@ -4,9 +4,11 @@ import { Users, CheckCircle } from 'lucide-react'
 import Navbar from '../components/common/Navbar'
 import { initiatePayment } from '../services/razorpay'
 import { saveRegistration } from '../services/registrationservice'
+import { useNavigate } from 'react-router-dom';
 
-const Registration = ({ onNavigateToHome }) => {
+const Registration = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     teamName: '',
@@ -596,9 +598,7 @@ const Registration = ({ onNavigateToHome }) => {
             <button
               onClick={() => {
                 setShowSuccessModal(false);
-                if (onNavigateToHome) {
-                  onNavigateToHome();
-                }
+                navigate('/');
               }}
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 sm:py-4 px-6 rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-purple-500/50 text-sm sm:text-base"
             >

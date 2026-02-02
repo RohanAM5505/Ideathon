@@ -11,12 +11,12 @@ const Timeline = () => {
     {
       date: "2nd Feb",
       title: "Registrations Begin",
-      description: "Form your duos or go solo... it's time to gear up, brainstorm, and register for the challenge of innovation!"
+      description: "Form your duos or squads... it's time to gear up, brainstorm, and register for the challenge of innovation!"
     },
     {
       date: "19th Feb",
-      title: "Forms Close & Templates Released",
-      description: "Submission window closes. Templates and resources are now available for you to start crafting your ideas."
+      title: "Forms Close & WhatsApp Group Access",
+      description: "Registration closes. Participants will be added to the WhatsApp group and drive link will be shared for PPT submission."
     },
     {
       date: "22nd Feb",
@@ -58,8 +58,10 @@ const Timeline = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="relative py-20 md:py-32 overflow-hidden">
-      <GridBackground />
+    <section ref={containerRef} className="relative py-20 md:py-32">
+      <div className="absolute inset-0 overflow-hidden">
+        <GridBackground />
+      </div>
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}

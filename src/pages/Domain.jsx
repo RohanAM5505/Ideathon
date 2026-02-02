@@ -1,36 +1,41 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import health from "../assets/images/health.svg"
+import internet from "../assets/images/internet-of-things.svg"
+import ai from "../assets/images/microchip.svg"
+import block from "../assets/images/blockchain.svg"
+import sustainability from "../assets/images/save-the-world.svg"
 
 const domains = [
   {
     title: "HEALTH-TECH",
     subtitle: "Tech that saves lives.",
     description: "Developing solutions that heal, support, and empower putting people at the heart of technological progress.",
-    icon: "🩺"
+    icon: health
   },
   {
     title: "IOT",
     subtitle: "The world, wired and alive.",
     description: "Connecting devices and systems to create smarter, more responsive environments for everyday life.",
-    icon: "📡"
+    icon: internet
   },
   {
     title: "AI",
     subtitle: "Intelligence, engineered.",
     description: "Harnessing artificial intelligence to solve real-world challenges, uplift communities, and create a more equitable future.",
-    icon: "🤖"
+    icon: ai
   },
   {
     title: "BLOCKCHAIN",
     subtitle: "Trust, rewritten.",
     description: "Building secure, transparent, and decentralized systems that revolutionize how we exchange value and information.",
-    icon: "⛓️"
+    icon: block
   },
   {
     title: "SUSTAINABILITY",
     subtitle: "Innovation for tomorrow.",
     description: "Designing technologies that balance convenience with responsibility shaping smarter, greener, and more resilient lifestyles.",
-    icon: "🌱"
+    icon: sustainability
   }
 ];
 
@@ -103,8 +108,12 @@ const DomainCard = ({ domain, index }) => {
         transition={{ duration: 0.3 }}
       >
         {/* Icon */}
-        <div className="text-4xl sm:text-5xl md:text-6xl mb-4 transform group-hover:scale-110 transition-transform duration-300 text-center">
-          {domain.icon}
+        <div className="text-4xl sm:text-5xl md:text-6xl mb-4 transform group-hover:scale-110 transition-transform duration-300 text-center flex justify-center items-center">
+          {typeof domain.icon === 'string' && domain.icon.endsWith('.svg') ? (
+            <img src={domain.icon} alt={domain.title} className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 brightness-0 invert" />
+          ) : (
+            <span className="grayscale brightness-200 contrast-200">{domain.icon}</span>
+          )}
         </div>
 
         {/* Title */}

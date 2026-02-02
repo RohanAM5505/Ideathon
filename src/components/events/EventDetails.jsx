@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { MapPin, Calendar, Clock, Trophy, Users, Zap } from "lucide-react";
 import GridBackground from "../ui/GridBackground";
 import Godimage from "../../assets/images/God.svg";
+import guide from "../../assets/images/info.svg";
+import detail from "../../assets/images/infoo.svg"
 
 const EventDetails = () => {
   return (
@@ -43,16 +45,6 @@ const EventDetails = () => {
                        bg-gradient-to-br from-purple-950/40 via-black/70 to-black/50
                        backdrop-blur-xl border border-purple-400/20 shadow-2xl"
           >
-            {/* Character Silhouette Background */}
-            <div className="absolute inset-0 overflow-hidden">
-              <img
-                src={Godimage}
-                alt=""
-                className="absolute left-1/2 bottom-0 -translate-x-1/2 h-[70%] w-auto opacity-[0.12] object-contain"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-            </div>
-
             {/* Glow Effects */}
             <div className="absolute top-10 left-10 w-80 h-80 bg-purple-500/15 rounded-full blur-[120px]" />
             <div className="absolute bottom-10 right-10 w-80 h-80 bg-pink-500/10 rounded-full blur-[120px]" />
@@ -89,7 +81,7 @@ const EventDetails = () => {
                 className="text-gray-300 text-sm xl:text-base leading-relaxed"
               >
                 Step into the arena where innovation meets execution. Transform your concepts into reality 
-                through 24 hours of intense creation, collaboration, and breakthrough thinking. 
+                through 8 hours of intense creation, collaboration, and breakthrough thinking. 
                 Rise through the ranks and claim your victory.
               </motion.p>
 
@@ -109,7 +101,7 @@ const EventDetails = () => {
                     <div className="text-xs text-gray-400 mt-1">Prize Pool</div>
                   </div>
                   <div>
-                    <div className="text-2xl xl:text-3xl font-bold text-pink-400">24hrs</div>
+                    <div className="text-2xl xl:text-3xl font-bold text-pink-400">8hrs</div>
                     <div className="text-xs text-gray-400 mt-1">Duration</div>
                   </div>
                   <div>
@@ -146,7 +138,7 @@ const EventDetails = () => {
                 {([
                   "Open to all students nationwide",
                   "Original ideas only - plagiarism disqualifies",
-                  "Working prototype demonstration required",
+                  "Working prototype demonstration is a plus",
                   "Final pitch presentation to judges"
                 ]).map((rule, i) => (
                   <motion.li
@@ -179,13 +171,6 @@ const EventDetails = () => {
             <div className="absolute top-0 right-0 w-60 h-60 bg-purple-500/10 rounded-full blur-[100px]" />
             
             {/* Character Image Subtle */}
-            <div className="absolute inset-0 opacity-[0.08]">
-              <img
-                src={Godimage}
-                alt=""
-                className="absolute right-0 bottom-0 h-full w-auto object-contain"
-              />
-            </div>
             
             <div className="relative z-10 p-8 xl:p-10 h-full">
               <div className="flex items-center gap-3 mb-6">
@@ -262,7 +247,7 @@ const EventDetails = () => {
                       <div className="text-[10px] sm:text-xs text-gray-400 mt-0.5">Prize</div>
                     </div>
                     <div>
-                      <div className="text-lg sm:text-xl font-bold text-pink-400">24hrs</div>
+                      <div className="text-lg sm:text-xl font-bold text-pink-400">8hrs</div>
                       <div className="text-[10px] sm:text-xs text-gray-400 mt-0.5">Duration</div>
                     </div>
                     <div>
@@ -287,7 +272,7 @@ const EventDetails = () => {
             >
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-pink-400/10 flex items-center justify-center flex-shrink-0">
-                  <Zap size={16} className="text-pink-400" />
+                  <img src={guide} alt="Guidelines Icon" className="w-4 h-4 brightness-0 invert" />
                 </div>
                 <h4 className="text-base sm:text-lg font-bold text-white">Guidelines</h4>
               </div>
@@ -322,7 +307,7 @@ const EventDetails = () => {
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-8 h-8 rounded-lg bg-purple-400/10 flex items-center justify-center flex-shrink-0">
-                    <Trophy size={16} className="text-purple-400" />
+                    <img src={detail} alt="Info Icon" className="w-4 h-4 text-purple-400 brightness-0 invert" />
                   </div>
                   <h4 className="text-base sm:text-lg font-bold text-white">Info</h4>
                 </div>

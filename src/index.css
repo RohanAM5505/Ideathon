@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-gradient-to-b from-[#1a0b2e] via-[#2d1550] to-[#0f0520] text-[#ededed];
+  @apply bg-gradient-to-b from-[#0a0515] via-[#150828] to-[#05030f] text-[#ededed];
   position: relative;
 }
 

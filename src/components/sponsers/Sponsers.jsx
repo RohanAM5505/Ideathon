@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 import GridBackground from "../ui/GridBackground";
+import surprise from "../../assets/images/surprise-box.svg"
 
 const Sponsers = () => {
   return (
@@ -55,22 +56,16 @@ const Sponsers = () => {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full border border-purple-400/30 mb-2"
+                className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 mb-2"
               >
-                <Lock className="w-8 h-8 md:w-10 md:h-10 text-purple-300" />
+                <img src={surprise} alt="Locked Content" className="text-white w-16 h-16 md:w-20 md:h-20 brightness-0 invert" />
               </motion.div>
 
-              {/* Main Message */}
-              <div className="space-y-3">
-                <h3 className="text-2xl md:text-3xl font-bold text-white">
-                  Coming Soon
-                </h3>
-                
-                <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-md mx-auto">
-                  We're partnering with incredible brands to make this event unforgettable. 
-                  The big reveal is just around the corner!
-                </p>
-              </div>
+              {/* Description Text */}
+              <p className="text-gray-300 text-base md:text-lg max-w-2xl">
+                We're partnering with incredible brands to make this event unforgettable. 
+                The big reveal is just around the corner!
+              </p>
 
               {/* Animated Dots */}
               <div className="flex items-center justify-center gap-2 pt-2">
@@ -94,12 +89,7 @@ const Sponsers = () => {
               <div className="h-px bg-gradient-to-r from-transparent via-purple-400/30 to-transparent my-6"></div>
 
               {/* Bottom CTA */}
-              <p className="text-gray-400 text-sm md:text-base">
-                Interested in sponsoring?{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold">
-                  Get in touch with us!
-                </span>
-              </p>
+              
             </div>
           </div>
         </motion.div>
