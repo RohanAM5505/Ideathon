@@ -9,7 +9,7 @@ const Timeline = () => {
 
   const milestones = [
     {
-      date: "2nd Feb",
+      date: "3rd Feb",
       title: "Registrations Begin",
       description: "Form your duos or squads... it's time to gear up, brainstorm, and register for the challenge of innovation!"
     },
@@ -19,12 +19,12 @@ const Timeline = () => {
       description: "Registration closes. Participants will be added to the WhatsApp group and drive link will be shared for PPT submission."
     },
     {
-      date: "22nd Feb",
+      date: "21st Feb",
       title: "PPT Submission Deadline",
       description: "Submit your presentation decks showcasing your innovative solutions and project details."
     },
     {
-      date: "23rd Feb",
+      date: "22nd Feb",
       title: "Shortlisted Teams Announced",
       description: "Top teams selected to pitch their ideas. Check if your team made it to the next round!"
     },

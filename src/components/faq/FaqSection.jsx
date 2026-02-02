@@ -23,11 +23,11 @@ const faqs = [
   },
   {
     q: "What if I'm a beginner?",
-    a: 'Perfect! We welcome beginners and provide mentorship and support throughout the hackathon to help you learn and build something amazing.'
+    a: 'Perfect! We welcome beginners and provide mentorship and support throughout the Ideathon to help you learn and build something amazing.'
   },
   {
     q: 'How are submissions judged?',
-    a: 'Submissions are evaluated based on innovation, technical implementation, presentation quality, and real-world impact. Our expert panel will assess your pitch and working prototype.'
+    a: 'Submissions are evaluated based on innovation, technical implementation, presentation quality, and real-world impact. Our expert panel will assess your pitch.'
   }
 ]
 

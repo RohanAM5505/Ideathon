@@ -280,7 +280,7 @@ const EventDetails = () => {
                 {([
                   "Open to all students",
                   "Original ideas only",
-                  "Prototype required",
+                  "Prototype Optional",
                   "Final pitch to judges"
                 ]).map((rule, i) => (
                   <li key={i} className="flex items-start gap-2 text-gray-300 text-sm sm:text-base">
@@ -312,8 +312,8 @@ const EventDetails = () => {
 
                 <div className="grid grid-cols-2 gap-2">
                   {([
-                    { icon: MapPin, label: "Venue", value: "Mini Hall 1" },
-                    { icon: Calendar, label: "Date", value: "Jan 26" },
+                    { icon: MapPin, label: "Venue", value: "Mini Hall 2" },
+                    { icon: Calendar, label: "Date", value: "Feb 26" },
                     { icon: Clock, label: "Time", value: "9 AM" },
                     { icon: Users, label: "Fee", value: "₹150" }
                   ]).map((item, i) => (
