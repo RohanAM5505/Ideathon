@@ -1,6 +1,6 @@
 // src/services/razorpay.js
 
-export const initiatePayment = async ({ formData, onSuccess }) => {
+export const initiatePayment = async ({ formData, onSuccess, onOpen, onDismiss }) => {
   // 1. Ensure Razorpay SDK loaded
   if (!window.Razorpay) {
     alert("Razorpay SDK not loaded. Please refresh.");
@@ -85,6 +85,16 @@ export const initiatePayment = async ({ formData, onSuccess }) => {
       modal: {
         ondismiss: () => {
           alert("Payment cancelled");
+          // Call onDismiss callback when Razorpay modal is dismissed
+          if (onDismiss) {
+            onDismiss();
+          }
+        },
+        onopen: () => {
+          // Call onOpen callback when Razorpay modal opens
+          if (onOpen) {
+            onOpen();
+          }
         },
       },
     };

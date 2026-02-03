@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react'
-import { Users, CheckCircle } from 'lucide-react'
+import { Users, CheckCircle, Loader2 } from 'lucide-react'
 import Navbar from '../components/common/Navbar'
 import { initiatePayment } from '../services/razorpay'
 import { saveRegistration } from '../services/registrationservice'
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Registration = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -244,6 +245,9 @@ const Registration = () => {
       return;
     }
 
+    // Set loading state
+    setIsLoading(true);
+
     // Filter members: Always include first 2 (mandatory), include 3rd and 4th only if they have data
     const filledMembers = formData.members.filter((member, index) => {
       if (index < 2) return true; // First 2 members are mandatory
@@ -264,6 +268,14 @@ const Registration = () => {
           leaderName: submissionData.members[0].name,
           leaderEmail: submissionData.members[0].email,
           leaderPhone: submissionData.members[0].phoneNumber,
+        },
+        onOpen: () => {
+          // Razorpay window opened, disable loading
+          setIsLoading(false);
+        },
+        onDismiss: () => {
+          // Payment cancelled, reset loading state
+          setIsLoading(false);
         },
         onSuccess: async (paymentResponse) => {
           // Combine registration data with payment details
@@ -301,6 +313,7 @@ const Registration = () => {
     } catch (error) {
       console.error('❌ Payment initiation error:', error);
       alert('Failed to open payment window. Please check console for details.');
+      setIsLoading(false);
     }
   };
 
@@ -542,7 +555,10 @@ const Registration = () => {
           <button
           type="button"
             onClick={handleSubmit}
-            className="w-full relative group overflow-hidden rounded-md sm:rounded-lg md:rounded-xl p-0.5 sm:p-1 transition-all duration-300"
+            disabled={isLoading}
+            className={`w-full relative group overflow-hidden rounded-md sm:rounded-lg md:rounded-xl p-0.5 sm:p-1 transition-all duration-300 ${
+              isLoading ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
             style={{
               background: 'linear-gradient(90deg, #a855f7, #ec4899, #a855f7)',
               backgroundSize: '200% 100%',
@@ -551,7 +567,16 @@ const Registration = () => {
             <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 rounded-md sm:rounded-lg py-3 sm:py-4 md:py-5 px-4 sm:px-6 md:px-8 
               transition-all duration-300 group-hover:from-purple-500 group-hover:to-pink-500">
               <span className="text-white text-sm sm:text-base md:text-lg lg:text-xl font-bold tracking-wider sm:tracking-widest flex items-center justify-center gap-2 sm:gap-3">
-                CHECKOUT
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
+                    <span className="bg-gradient-to-r from-white via-purple-100 to-pink-100 bg-clip-text text-transparent animate-pulse">
+                      FIRING UP THE ENGINES...
+                    </span>
+                  </>
+                ) : (
+                  'CHECKOUT'
+                )}
               </span>
             </div>
           </button>
