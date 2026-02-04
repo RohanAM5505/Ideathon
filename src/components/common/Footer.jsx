@@ -62,7 +62,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <Trophy size={16} className="text-pink-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="text-white font-medium">Prize Pool:</span> ₹50,000+
+                  <span className="text-white font-medium">Prize Pool:</span> ₹25,000+
                 </div>
               </li>
             </ul>

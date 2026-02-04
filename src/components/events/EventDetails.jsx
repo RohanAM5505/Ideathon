@@ -97,7 +97,7 @@ const EventDetails = () => {
                 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <div className="text-2xl xl:text-3xl font-bold text-pink-400">₹50K</div>
+                    <div className="text-2xl xl:text-3xl font-bold text-pink-400">₹25K</div>
                     <div className="text-xs text-gray-400 mt-1">Prize Pool</div>
                   </div>
                   <div>
@@ -243,7 +243,7 @@ const EventDetails = () => {
                   
                   <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-white/10">
                     <div>
-                      <div className="text-lg sm:text-xl font-bold text-pink-400">₹50K</div>
+                      <div className="text-lg sm:text-xl font-bold text-pink-400">₹25K</div>
                       <div className="text-[10px] sm:text-xs text-gray-400 mt-0.5">Prize</div>
                     </div>
                     <div>

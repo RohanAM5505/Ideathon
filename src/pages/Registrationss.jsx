@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Users, CheckCircle, Loader2 } from 'lucide-react'
 import Navbar from '../components/common/Navbar'
 import { initiatePayment } from '../services/razorpay'
@@ -9,7 +9,34 @@ import { useNavigate } from 'react-router-dom';
 const Registration = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [countdown, setCountdown] = useState(60)
   const navigate = useNavigate();
+
+  // Countdown timer effect
+  useEffect(() => {
+    let timer;
+    if (isLoading && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (!isLoading) {
+      setCountdown(60); // Reset when not loading
+    }
+    
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isLoading, countdown]);
+
+  // Get loading message based on countdown
+  const getLoadingMessage = () => {
+    if (countdown > 50) return 'Initializing payment gateway...';
+    if (countdown > 40) return 'Securing your connection...';
+    if (countdown > 30) return 'Preparing checkout...';
+    if (countdown > 20) return 'Almost there...';
+    if (countdown > 10) return 'Finalizing setup...';
+    return 'Opening payment window...';
+  };
 
   const [formData, setFormData] = useState({
     teamName: '',
@@ -568,12 +595,17 @@ const Registration = () => {
               transition-all duration-300 group-hover:from-purple-500 group-hover:to-pink-500">
               <span className="text-white text-sm sm:text-base md:text-lg lg:text-xl font-bold tracking-wider sm:tracking-widest flex items-center justify-center gap-2 sm:gap-3">
                 {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
-                    <span className="bg-gradient-to-r from-white via-purple-100 to-pink-100 bg-clip-text text-transparent animate-pulse">
-                      FIRING UP THE ENGINES...
-                    </span>
-                  </>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
+                      <span className="bg-gradient-to-r from-white via-purple-100 to-pink-100 bg-clip-text text-transparent">
+                        {getLoadingMessage()}
+                      </span>
+                    </div>
+                    <div className="text-xs sm:text-sm text-purple-200 font-normal">
+                      {countdown}s
+                    </div>
+                  </div>
                 ) : (
                   'CHECKOUT'
                 )}
